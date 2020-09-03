@@ -4,6 +4,8 @@ message("Compiling \"${MODULE_NAME}\"")
 
 add_library(${MODULE_NAME} SHARED "")
 
+set_target_properties(${MODULE_NAME} PROPERTIES SOVERSION "1.0.0")
+
 # dependencies
 find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 
