@@ -2,8 +2,6 @@
 #define MULTISLIDER_H
 
 #include <QWidget>
-#include <QPainter>
-#include <QStyle>
 #include <QMouseEvent>
 
 namespace XB
@@ -17,23 +15,25 @@ private:
 
     Qt::Orientation _orientation;
 
-    int _handleWidth;
-    int _handleHeight;
-
     int _minimum;
     int _maximum;
 
-    int _firstValue;
-    int _secondValue;
+    int _border = 2;
 
-    bool _firstHandlePressed;
-    bool _secondHandlePressed;
+    struct Handle
+    {
+        int    value   = 0;
+        bool   pressed = false;
+        QColor color;
 
-    bool _firstHandleHovered;
-    bool _secondHandleHovered;
+        Handle(int value, QColor color) : value(value), color(color)
+        {
+        }
+    };
 
-    QColor _firstHandleColor;
-    QColor _secondHandleColor;
+    std::vector<Handle> _handles;
+
+    std::vector<Handle*> sortedHandles();
 
 protected:
     void paintEvent(QPaintEvent* event);
@@ -41,55 +41,28 @@ protected:
     void mouseMoveEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
 
-    QRectF firstHandleRect() const;
-    QRectF secondHandleRect() const;
-    QRectF handleRect(int value) const;
-    qreal  span() const;
-
 public:
     MultiSlider(Qt::Orientation orientation = Qt::Vertical, QWidget* parent = nullptr);
 
     QSize minimumSizeHint() const;
 
-    inline int firstValue() const
-    {
-        return _firstValue;
-    }
-    inline int secondValue() const
-    {
-        return _secondValue;
-    }
-    inline int minimum() const
-    {
-        return _minimum;
-    }
-    inline int maximum() const
-    {
-        return _maximum;
-    }
-    inline Qt::Orientation orientation() const
-    {
-        return _orientation;
-    }
-    inline int interval() const
-    {
-        return secondValue() - firstValue();
-    }
-    inline unsigned int absInterval() const
-    {
-        return qAbs(interval());
-    }
+    int             value(int index) const;
+    int             minimum() const;
+    int             maximum() const;
+    Qt::Orientation orientation() const;
+
+    void addHandle(int value, QColor color = QColor());
+    void insertHandle(int index, int value, QColor color = QColor());
+    void removeHandle(int index);
 
 signals:
-    void firstValueChanged(int firstValue);
-    void secondValueChanged(int secondValue);
+    void valueChanged(int index, int value);
     void rangeChanged(int min, int max);
     void sliderPressed();
     void sliderReleased();
 
 public slots:
-    void setFirstValue(int firstValue);
-    void setSecondValue(int secondValue);
+    void setValue(int index, int value);
     void setMinimum(int min);
     void setMaximum(int max);
     void setRange(int min, int max);
