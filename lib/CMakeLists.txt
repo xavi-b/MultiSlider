@@ -21,3 +21,12 @@ target_include_directories(${MODULE_NAME}
     PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
+
+# install
+install(
+    TARGETS ${MODULE_NAME}
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include
+)
